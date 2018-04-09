@@ -6,3 +6,6 @@ local/
 share/
 
 pip-selfcheck.json
+*.pyc
+*.pyo
+*.map
