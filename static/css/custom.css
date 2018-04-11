@@ -1,1 +1,44 @@
 /* Main */
+body{
+  padding: 60px;
+}
+
+.card-intro {
+  margin-bottom: 30px;
+}
+
+.button-container {
+  text-align: center;
+}
+
+.button-container button {
+  width: 115px;
+  margin: 0 5px;
+}
+
+.results-container {
+  width: 100%;
+  height: auto;
+  border: 1px solid lightgray;
+  border-radius: 0.25rem;
+  background-color: #FAFAFA;
+  margin-bottom: 15px;
+}
+
+.results-header {
+  padding: 15px;
+  border-bottom: 1px solid lightgray;
+}
+
+.results-header span {
+  font-weight: 600;
+}
+
+.result-item {
+  margin: 5px;
+
+}
+
+.result-message {
+  text-align: center;
+}
