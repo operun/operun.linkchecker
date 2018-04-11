@@ -1,22 +1,99 @@
 <!DOCTYPE html>
 <html>
-
 <head>
-
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.0/css/bootstrap.min.css">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
   <title>operun Linkchecker</title>
 
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+
 </head>
-
 <body>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-3"></div>
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-body">
 
-  {% for link in error_pages %}
-  <div>{{ link }}</div>
-  {% endfor %}
+            <div class="card-intro">
+              <h1>Linkchecker</h1>
+              <div class="card-text">
+               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut doloremque nisi tenetur, perspiciatis quos saepe provident iste expedita distinctio. Consequuntur!
+              </div>
+            </div>
 
+            <form id="linkchecker-form" method="post">
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="website_url">Link</label>
+                <div class="col-sm-9">
+                    <input type="text" class="form-control" name="website_url" placeholder="Enter a Website URL">
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="timeout">Timeout</label>
+                <div class="col-sm-9">
+                  <select class="form-control" name="timeout">
+                    <option value="5">5 Seconds</option>
+                    <option value="10">10 Seconds</option>
+                    <option value="15">15 Seconds</option>
+                    <option value="20">20 Seconds</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group row">
+                <label class="col-sm-3 col-form-label" for="depth">Depth</label>
+                <div class="col-sm-9">
+                  <input type="range" class="custom-range" min="0" max="100" name="depth" value="0">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <div class="col-sm-12">
+                  <div class="button-container">
+                    <button type="submit" class="btn btn-primary" name="form.button.submit">Start</button>
+                    <button type="submit" class="btn btn-info" name="form.button.refresh">Refresh</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+
+            {% if bad_links %}
+            <div class="container results-container">
+              <div class="row results-header">
+                <div class="col-sm-10">
+                  <span>URL</span>
+                </div>
+                <div class="col-md-2">
+                  <span>Error</span>
+                </div>
+              </div>
+              <div class="results">
+
+                  {% for item in bad_links %}
+                  <div class="result-item">
+                    <a href="{{ item }}">{{ item }}</a>
+                  </div>
+                  {% endfor %}
+
+              </div>
+            </div>
+            <div class="result-message">
+              Es wurden {{ bad_links|length }} kaputte Links gefunden.
+            </div>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
-
 </html>
