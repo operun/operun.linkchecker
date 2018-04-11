@@ -36,7 +36,7 @@ def return_error_pages(site_links=[], config={}):
     for item in error_pages:
         raw = error_pages[item]
         item_url = raw.url_split.geturl()
-        item_status = raw.status()
+        item_status = raw.status
         item_message = raw.get_status_message()
         data = {
             'item_url': item_url,
