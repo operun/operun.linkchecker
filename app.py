@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import csv
-from io import StringIO
+import StringIO
 
-from flask import Flask, render_template, request, stream_with_context
+from flask import Flask, make_response, render_template, request
 from pylinkvalidator import api
-from werkzeug.datastructures import Headers
-from werkzeug.wrappers import Response
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -15,14 +13,15 @@ app.config.from_object(__name__)
 @app.route('/', methods=['GET', 'POST'])
 def index():
     template = 'index.html'
-    data = {}
     form = request.form
+    data = {}
+
     if len(form):
+        submit = form.get('form.button.submit', '')
         website_url = form.get('website_url', '')
-        if not website_url:
-            return render_template(template)
         timeout = int(form.get('timeout', '5'))
         depth = int(form.get('depth', '0'))
+
         result = return_error_pages(
             site_links=[website_url],
             config={
@@ -30,13 +29,16 @@ def index():
                 'timeout': timeout,
             },
         )
-        # Append data
+
         data['errors'] = result
         data['website_url'] = website_url
         data['timeout'] = timeout
         data['depth'] = depth
-        # Generate CSV
-        generate_csv(result)
+
+        if submit == 'csv':
+            csv_data = generate_csv(result)
+            return csv_response(csv_data)
+
     return render_template(template, **data)
 
 
@@ -63,9 +65,9 @@ def return_error_pages(site_links=[], config={}):
 
 def generate_csv(items):
     header = ['url', 'status']
-    data = StringIO()
+    strIO = StringIO.StringIO()
     writer = csv.DictWriter(
-        data,
+        strIO,
         delimiter=',',
         lineterminator='\n',
         fieldnames=header,
@@ -77,3 +79,11 @@ def generate_csv(items):
             'status': item['item_status'],
         }
         writer.writerow(data)
+    return strIO
+
+
+def csv_response(data):
+    output = make_response(data.getvalue())
+    output.headers['Content-Disposition'] = 'attachment; filename=export.csv'
+    output.headers["Content-type"] = "text/csv"
+    return output

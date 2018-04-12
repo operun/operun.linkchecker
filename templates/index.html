@@ -65,7 +65,7 @@
               </div>
 
               <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="depth">Depth <span id="depth-value">0</span></label>
+                <label class="col-sm-3 col-form-label" for="depth">Depth <span class="depth-value">0</span></label>
                 <div class="col-sm-9">
                   <input type="range" class="custom-range" min="0" max="100" name="depth" value="{{ depth or 0 }}">
                 </div>
@@ -75,7 +75,10 @@
                 <div class="col-sm-12">
 
                   <div class="button-container">
-                    <button type="submit" class="btn btn-primary" name="form.button.submit" id="start-button">Start</button>
+                    <button type="submit" class="btn btn-primary" name="form.button.submit" id="start">Start</button>
+                    {% if errors %}
+                    <button type="submit" class="btn btn-success" name="form.button.submit" value="csv" id="download">Download as CSV</button>
+                    {% endif %}
                   </div>
 
                 </div>
@@ -118,11 +121,11 @@
 
   <script type="text/javascript">
     $('.custom-range').on('input', function() {
-      $('#depth-value').html(this.value);
+      $('.depth-value').html(this.value);
     });
 
-    $('#start-button').on('click', function(e) {
-      $('.full-page-spinner').addClass('active');
+    $('#start').on('click', function(e) {
+      $('.full-page-spinner').toggleClass('active');
     });
 
   </script>
