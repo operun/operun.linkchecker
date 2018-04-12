@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,28 +13,42 @@
   <title>operun Linkchecker</title>
 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 </head>
+
 <body>
+
+  <div class="spinner-section full-page-spinner">
+    <div class="loader"></div>
+    <img src="" alt="" />
+  </div>
+
   <div class="container">
     <div class="row">
+
       <div class="col-md-3"></div>
+
       <div class="col-md-6">
         <div class="card">
           <div class="card-body">
 
             <div class="card-intro">
+
               <h1>Linkchecker</h1>
+
               <div class="card-text">
-               Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aut doloremque nisi tenetur, perspiciatis quos saepe provident iste expedita distinctio. Consequuntur!
+                This tool can be used to discover broken links on web pages. Increasing the depth of the search will take longer, but yield a more comprehensive result.
               </div>
+
             </div>
 
             <form id="linkchecker-form" method="post">
+
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="website_url">Link</label>
                 <div class="col-sm-9">
-                    <input type="text" class="form-control" name="website_url" placeholder="Enter a Website URL">
+                  <input type="text" class="form-control" name="website_url" placeholder="Enter a website URL">
                 </div>
               </div>
 
@@ -49,51 +65,69 @@
               </div>
 
               <div class="form-group row">
-                <label class="col-sm-3 col-form-label" for="depth">Depth</label>
+                <label class="col-sm-3 col-form-label" for="depth">Depth <span id="depth-value">0</span></label>
                 <div class="col-sm-9">
-                  <input type="range" class="custom-range" min="0" max="100" name="depth" value="0">
+                  <input type="range" class="custom-range" min="0" max="100" name="depth" onchange="updateTextInput(this.value);" value="0">
                 </div>
               </div>
 
-              <div class="form-group">
+              <div class="form-group row">
                 <div class="col-sm-12">
+
                   <div class="button-container">
-                    <button type="submit" class="btn btn-primary" name="form.button.submit">Start</button>
-                    <button type="submit" class="btn btn-info" name="form.button.refresh">Refresh</button>
+                    <button type="submit" class="btn btn-primary" name="form.button.submit" id="start-button">Start</button>
+                    <button type="submit" class="btn btn-info" name="form.button.refresh" id="refresh-button">Refresh</button>
                   </div>
+
                 </div>
               </div>
+
             </form>
 
-            {% if bad_links %}
+            {% if errors %}
             <div class="container results-container">
+
               <div class="row results-header">
-                <div class="col-sm-10">
-                  <span>URL</span>
-                </div>
-                <div class="col-md-2">
-                  <span>Error</span>
-                </div>
+                <div class="col-md-10"><span>URL</span></div>
+                <div class="col-md-2"><span>Error</span></div>
               </div>
-              <div class="results">
 
-                  {% for item in bad_links %}
-                  <div class="result-item">
-                    <a href="{{ item }}">{{ item }}</a>
-                  </div>
-                  {% endfor %}
-
+              <div class="row results">
+                {% for item in errors %}
+                <div class="col-md-10">
+                  <a class="result-item" href="{{ item['item_url'] }}" target="_blank">{{ item['item_url'] }}</a>
+                </div>
+                <div class="col-md-2"><span class="result-error" title="{{ item['item_status_message'] }}">{{ item['item_status'] }}</span></div>
+                {% endfor %}
               </div>
+
             </div>
+
             <div class="result-message">
-              Es wurden {{ bad_links|length }} kaputte Links gefunden.
+              There were {{ errors|length }} errors found.
             </div>
             {% endif %}
 
           </div>
         </div>
       </div>
+
+      <div class="col-md-3"></div>
+
     </div>
   </div>
+
+  <script type="text/javascript">
+    function updateTextInput(val) {
+      document.getElementById('depth-value').innerHTML = val;
+    }
+
+    $('#start-button').on('click', function(e) {
+      $('.full-page-spinner').addClass('active');
+    });
+
+  </script>
+
 </body>
+
 </html>
