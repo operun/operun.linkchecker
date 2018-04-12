@@ -27,9 +27,9 @@
   <div class="container">
     <div class="row">
 
-      <div class="col-md-3"></div>
+      <div class="col-md-2"></div>
 
-      <div class="col-md-6">
+      <div class="col-md-8">
         <div class="card">
           <div class="card-body">
 
@@ -48,7 +48,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="website_url">Link</label>
                 <div class="col-sm-9">
-                  <input type="text" class="form-control" name="website_url" placeholder="Enter a website URL">
+                  <input type="text" class="form-control" name="website_url" placeholder="Enter a website URL" value="{{ website_url }}">
                 </div>
               </div>
 
@@ -56,10 +56,10 @@
                 <label class="col-sm-3 col-form-label" for="timeout">Timeout</label>
                 <div class="col-sm-9">
                   <select class="form-control" name="timeout">
-                    <option value="5">5 Seconds</option>
-                    <option value="10">10 Seconds</option>
-                    <option value="15">15 Seconds</option>
-                    <option value="20">20 Seconds</option>
+                    <option value="5" {% if timeout == 5 %} selected {% endif %}>5 Seconds</option>
+                    <option value="10" {% if timeout == 10 %} selected {% endif %}>10 Seconds</option>
+                    <option value="15" {% if timeout == 15 %} selected {% endif %}>15 Seconds</option>
+                    <option value="20" {% if timeout == 20 %} selected {% endif %}>20 Seconds</option>
                   </select>
                 </div>
               </div>
@@ -67,7 +67,7 @@
               <div class="form-group row">
                 <label class="col-sm-3 col-form-label" for="depth">Depth <span id="depth-value">0</span></label>
                 <div class="col-sm-9">
-                  <input type="range" class="custom-range" min="0" max="100" name="depth" onchange="updateTextInput(this.value);" value="0">
+                  <input type="range" class="custom-range" min="0" max="100" name="depth" value="{{ depth or 0 }}">
                 </div>
               </div>
 
@@ -76,7 +76,6 @@
 
                   <div class="button-container">
                     <button type="submit" class="btn btn-primary" name="form.button.submit" id="start-button">Start</button>
-                    <button type="submit" class="btn btn-info" name="form.button.refresh" id="refresh-button">Refresh</button>
                   </div>
 
                 </div>
@@ -112,15 +111,15 @@
         </div>
       </div>
 
-      <div class="col-md-3"></div>
+      <div class="col-md-2"></div>
 
     </div>
   </div>
 
   <script type="text/javascript">
-    function updateTextInput(val) {
-      document.getElementById('depth-value').innerHTML = val;
-    }
+    $('.custom-range').on('input', function() {
+      $('#depth-value').html(this.value);
+    });
 
     $('#start-button').on('click', function(e) {
       $('.full-page-spinner').addClass('active');
