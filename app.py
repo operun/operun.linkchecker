@@ -21,6 +21,12 @@ def index():
         website_url = form.get('website_url', '')
         timeout = int(form.get('timeout', '5'))
         depth = int(form.get('depth', '0'))
+        csv_data = form.get('csv_data', '')
+
+        if submit == 'csv':
+            if csv_data:
+                return csv_response(csv_data)
+            return render_template(template)
 
         result = return_error_pages(
             site_links=[website_url],
@@ -30,14 +36,13 @@ def index():
             },
         )
 
+        csv_data = generate_csv(result)
+
         data['errors'] = result
         data['website_url'] = website_url
         data['timeout'] = timeout
         data['depth'] = depth
-
-        if submit == 'csv':
-            csv_data = generate_csv(result)
-            return csv_response(csv_data)
+        data['csv_data'] = csv_data
 
     return render_template(template, **data)
 
@@ -79,11 +84,11 @@ def generate_csv(items):
             'status': item['item_status'],
         }
         writer.writerow(data)
-    return strIO
+    return strIO.getvalue()
 
 
 def csv_response(data):
-    output = make_response(data.getvalue())
+    output = make_response(data)
     output.headers['Content-Disposition'] = 'attachment; filename=export.csv'
     output.headers["Content-type"] = "text/csv"
     return output
