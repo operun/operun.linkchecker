@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 
-from flask import Flask, render_template, request
+import csv
+from io import StringIO
+
+from flask import Flask, render_template, request, stream_with_context
 from pylinkvalidator import api
+from werkzeug.datastructures import Headers
+from werkzeug.wrappers import Response
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -9,12 +14,15 @@ app.config.from_object(__name__)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    template = 'index.html'
     data = {}
     form = request.form
     if len(form):
-        website_url = form.get('website_url', 'www.operun.de')
-        timeout = form.get('timeout', '')
-        depth = int(form.get('depth', ''))
+        website_url = form.get('website_url', '')
+        if not website_url:
+            return render_template(template)
+        timeout = int(form.get('timeout', '5'))
+        depth = int(form.get('depth', '0'))
         result = return_error_pages(
             site_links=[website_url],
             config={
@@ -22,8 +30,14 @@ def index():
                 'timeout': timeout,
             },
         )
+        # Append data
         data['errors'] = result
-    return render_template('index.html', **data)
+        data['website_url'] = website_url
+        data['timeout'] = timeout
+        data['depth'] = depth
+        # Generate CSV
+        generate_csv(result)
+    return render_template(template, **data)
 
 
 def return_error_pages(site_links=[], config={}):
@@ -45,3 +59,21 @@ def return_error_pages(site_links=[], config={}):
         }
         error_items.append(data)
     return error_items
+
+
+def generate_csv(items):
+    header = ['url', 'status']
+    data = StringIO()
+    writer = csv.DictWriter(
+        data,
+        delimiter=',',
+        lineterminator='\n',
+        fieldnames=header,
+    )
+    writer.writeheader()
+    for item in items:
+        data = {
+            'url': item['item_url'],
+            'status': item['item_status'],
+        }
+        writer.writerow(data)
