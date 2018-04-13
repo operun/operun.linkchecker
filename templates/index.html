@@ -15,6 +15,9 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/atom-one-dark.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
 </head>
 
 <body>
@@ -98,16 +101,49 @@
 
               <div class="row results">
                 {% for item in errors %}
+
                 <div class="col-md-10">
-                  <a class="result-item" href="{{ item['item_url'] }}" target="_blank">{{ item['item_url'] }}</a>
+
+                  <div class="result-link">
+                    <a class="result-item" href="{{ item['item_url'] }}" target="_blank">{{ item['item_url'] }}</a>
+                  </div>
+
+                  <div class="result-sources">
+
+                    <div class="result-message">
+                      <span>This link was found on {{ item['sources'] }} pages.</span>
+                    </div>
+
+                    <div class="source-items-wrapper">
+                      <div class="source-items">
+                        {% for source in item['sources_data'] %}
+                        <div class="source-item">
+
+                          <div class="source-item-link">
+                            <a href="{{ source['source_url'] }}">{{ source['source_url'] }}</a>
+                          </div>
+
+                          <pre><code class="html">{{ source['source_html'] }}</code></pre>
+
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+
+                  </div>
+
                 </div>
-                <div class="col-md-2"><span class="result-error" title="{{ item['item_status_message'] }}">{{ item['item_status'] }}</span></div>
+
+                <div class="col-md-2">
+                  <span class="result-error" title="{{ item['item_status_message'] }}">{{ item['item_status'] }}</span>
+                </div>
+
                 {% endfor %}
               </div>
 
             </div>
 
-            <div class="result-message">
+            <div class="page-message">
               There were {{ errors|length }} errors found.
             </div>
             {% endif %}
@@ -129,6 +165,12 @@
     $('#start').on('click', function(e) {
       $('.full-page-spinner').toggleClass('active');
     });
+
+    $('.result-message').on('click', function() {
+      $(this).next('.source-items-wrapper').toggleClass('is-open');
+    });
+
+    hljs.initHighlightingOnLoad();
 
   </script>
 
