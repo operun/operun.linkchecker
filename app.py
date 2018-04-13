@@ -3,6 +3,8 @@
 import csv
 import StringIO
 
+import BeautifulSoup
+import requests
 from flask import Flask, make_response, render_template, request
 from pylinkvalidator import api
 
@@ -32,6 +34,9 @@ def index():
             config={
                 'depth': depth,
                 'timeout': timeout,
+                'workers': 12,
+                'mode': 'process',
+                'progress': True,
             },
         )
         csv_data = generate_csv(result)
@@ -40,6 +45,24 @@ def index():
         data['timeout'] = timeout
         data['depth'] = depth
         data['csv_data'] = csv_data
+    return render_template(template, **data)
+
+
+@app.route('/inspector', methods=['GET', 'POST'])
+def inspector():
+    template = 'inspector.html'
+    form = request.form
+    data = {
+        'broken_link': '',
+        'page_html': '',
+    }
+    if len(form):
+        item_url = form.get('item_url', '')
+        item_source_url = form.get('item_source_url', '')
+        data['broken_link'] = item_url.replace(item_source_url, '')
+        r = requests.get(item_source_url)
+        soup = BeautifulSoup.BeautifulSoup(r.content)
+        data['page_html'] = soup.prettify().decode('utf-8')
     return render_template(template, **data)
 
 
@@ -77,7 +100,7 @@ def return_error_pages(site_links=[], config={}):
 
 
 def generate_csv(items):
-    header = ['url', 'status']
+    header = ['status', 'source', 'url']
     strIO = StringIO.StringIO()
     writer = csv.DictWriter(
         strIO,
@@ -87,11 +110,13 @@ def generate_csv(items):
     )
     writer.writeheader()
     for item in items:
-        data = {
-            'url': item['item_url'],
-            'status': item['item_status'],
-        }
-        writer.writerow(data)
+        for s_item in item['sources_data']:
+            data = {
+                'status': item['item_status'],
+                'source': s_item['source_url'],
+                'url': item['item_url'],
+            }
+            writer.writerow(data)
     return strIO.getvalue()
 
 

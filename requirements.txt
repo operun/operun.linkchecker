@@ -2,3 +2,4 @@ flask
 pdbpp
 pygments
 pylinkvalidator
+beautifulsoup
