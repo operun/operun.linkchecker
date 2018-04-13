@@ -125,6 +125,14 @@
 
                           <pre><code class="html">{{ source['source_html'] }}</code></pre>
 
+                          <div>
+                            <form action="{{ url_for('inspector') }}" method="post" target="_blank">
+                              <input type="hidden" name="item_url" value="{{ item['item_url'] }}">
+                              <input type="hidden" name="item_source_url" value="{{ source['source_url'] }}">
+                              <button type="submit" class="btn btn-info" name="form.button.submit">Inspector</button>
+                            </form>
+                          </div>
+
                         </div>
                         {% endfor %}
                       </div>
@@ -135,7 +143,7 @@
                 </div>
 
                 <div class="col-md-2">
-                  <span class="result-error" title="{{ item['item_status_message'] }}">{{ item['item_status'] }}</span>
+                  <a class="result-error" title="{{ item['item_status_message'] }}" href="https://de.wikipedia.org/wiki/HTTP-Statuscode#code{{ item['item_status'] }}" target="_blank">{{ item['item_status'] }}</a>
                 </div>
 
                 {% endfor %}

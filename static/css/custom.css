@@ -4,6 +4,16 @@ body {
   background-color: #FAFAFA;
 }
 
+#inspector-body {
+  background-color: #282C34;
+}
+
+#inspector {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
 .card-body {
   background-color: #FFFFFF;
 }
@@ -65,6 +75,7 @@ body {
 .source-item {
   margin-bottom: 5px;
   padding: 15px;
+  border-radius: 0.25rem;
   background-color: #EEEEEE;
 }
 
@@ -103,6 +114,7 @@ body {
   width: 100%;
   color: #F44336;
   text-align: center;
+  text-decoration: none;
 }
 
 .results-header {
@@ -162,4 +174,13 @@ body {
   100% {
     transform: rotate(360deg);
   }
+}
+
+span.hljs-tag.is-highlighted {
+  display: inline-block;
+  margin: 10px 0;
+  padding: 10px 15px;
+  border: 1px solid red;
+  border-radius: 5em;
+  background-color: rgba(255,0,0,0.15);
 }
