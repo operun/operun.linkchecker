@@ -24,6 +24,12 @@
 <body id="inspector-body">
 
   {% if page_html %}
+  <div class="card text-center inspector-float">
+    <div class="card-body">
+      <a href="{{ source_url }}" target="_blank">{{ source_url }}</a>
+    </div>
+  </div>
+
   <pre id="inspector"><code class="html">{{ page_html }}</code></pre>
 
   <script type="text/javascript">
