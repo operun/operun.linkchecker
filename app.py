@@ -55,14 +55,16 @@ def inspector():
     data = {
         'broken_link': '',
         'page_html': '',
+        'source_url': '',
     }
     if len(form):
         item_url = form.get('item_url', '')
         item_source_url = form.get('item_source_url', '')
-        data['broken_link'] = item_url.replace(item_source_url, '')
         r = requests.get(item_source_url)
         soup = BeautifulSoup.BeautifulSoup(r.content)
+        data['broken_link'] = item_url.replace(item_source_url, '')
         data['page_html'] = soup.prettify().decode('utf-8')
+        data['source_url'] = item_source_url
     return render_template(template, **data)
 
 
