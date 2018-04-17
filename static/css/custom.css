@@ -9,9 +9,7 @@ body {
 }
 
 #inspector {
-  position: absolute;
-  top: 0;
-  left: 0;
+  white-space: pre-wrap;
 }
 
 .card-body {
