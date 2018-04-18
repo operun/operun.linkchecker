@@ -4,20 +4,12 @@ body {
   background-color: #FAFAFA;
 }
 
-#inspector-body {
-  background-color: #282C34;
-}
-
-#inspector {
-  white-space: pre-wrap;
-}
-
-.card.text-center.inspector-float {
-  position: fixed;
+.page-logo {
+  position: absolute;
+  top: 0;
   right: 0;
-  left: 0;
-  margin: 0 auto;
-  width: 420px;
+  padding: 20px;
+  width: 150px;
 }
 
 .card-body {
@@ -182,11 +174,55 @@ body {
   }
 }
 
-span.hljs-tag.is-highlighted {
+#inspector-body {
+  background-color: #282C34;
+}
+
+#inspector-body .inspector-float {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  padding: 15px;
+  width: 100%;
+  background-color: #FAFAFA;
+  box-shadow: 0 0 30px #212121;
+  text-align: center;
+}
+
+#inspector-body .inspector-float .page-logo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  width: 120px;
+}
+
+#inspector-body .inspector-float a {
+  color: #212121;
+  text-decoration: none;
+}
+
+#inspector {
+  color: #CCCCCC;
+  counter-reset: line-numbering;
+}
+
+#inspector code > span::before {
+  padding-right: 1em;
+  width: 1.5em;
+  content: counter(line-numbering);
+  counter-increment: line-numbering;
+  opacity: 0.5;
+}
+
+#inspector-body .is-highlighted {
   display: inline-block;
   margin: 10px 0;
   padding: 10px 15px;
   border: 1px solid red;
-  border-radius: 5em;
+  border-radius: 0.25rem;
   background-color: rgba(255,0,0,0.15);
+  cursor: pointer;
+  transition: transform 250ms ease-in-out;
 }
