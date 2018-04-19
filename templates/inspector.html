@@ -40,21 +40,25 @@
   <script type="text/javascript">
     hljs.initHighlighting.called = false;
     $(document).ready(function() {
+
       hljs.initHighlighting();
+
       if (hljs.initHighlighting.called) {
         var broken_link = $("span.hljs-string:contains('{{ broken_link }}')");
         var parent = broken_link.closest('.hljs-tag');
+
         parent.addClass('is-highlighted');
+
         $('span.is-highlighted').attr('id', function(idx) {
           return 'hl' + idx;
         });
-        $('#inspector code').html(function(i, old) {
-          return '<span>' + old.split('\n').join('</span>\n<span>') + '</span>';
-        })
-        $('html,body').animate({
+
+        $('html, body').animate({
           scrollTop: ($('#hl0').offset().top - 200)
         }, 'slow');
+
       };
+
     })
 
   </script>
