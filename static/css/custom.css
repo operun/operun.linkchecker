@@ -190,30 +190,17 @@ body {
   text-align: center;
 }
 
+#inspector-body .inspector-float a {
+  color: #212121;
+  text-decoration: none;
+}
+
 #inspector-body .inspector-float .page-logo {
   position: absolute;
   top: 0;
   left: 0;
   padding: 10px;
   width: 120px;
-}
-
-#inspector-body .inspector-float a {
-  color: #212121;
-  text-decoration: none;
-}
-
-#inspector {
-  color: #CCCCCC;
-  counter-reset: line-numbering;
-}
-
-#inspector code > span::before {
-  padding-right: 1em;
-  width: 1.5em;
-  content: counter(line-numbering);
-  counter-increment: line-numbering;
-  opacity: 0.5;
 }
 
 #inspector-body .is-highlighted {

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-
-import csv
-import StringIO
-
 import BeautifulSoup
 import requests
-from flask import Flask, make_response, render_template, request
-from pylinkvalidator import api
+from flask import Flask, render_template, request
+from utils import (
+    check_redirects,
+    csv_response,
+    generate_csv,
+    return_error_pages,
+)
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -37,8 +38,11 @@ def index():
                 'workers': 12,
                 'mode': 'process',
                 'progress': True,
+                'test-outside': True,
             },
         )
+        if result:
+            result = check_redirects(result)
         csv_data = generate_csv(result)
         data['errors'] = result
         data['website_url'] = website_url
@@ -66,64 +70,3 @@ def inspector():
         data['page_html'] = soup.prettify().decode('utf-8')
         data['source_url'] = item_source_url
     return render_template(template, **data)
-
-
-def return_error_pages(site_links=[], config={}):
-    error_items = []
-    crawled_site = api.crawl_with_options(
-        site_links,
-        config,
-    )
-    error_pages = crawled_site.error_pages
-    for item in error_pages:
-        raw = error_pages[item]
-        sources = raw.sources
-        sources_data = []
-        for source in sources:
-            source_url = source.origin.geturl()
-            source_html = source.origin_str
-            source_data = {
-                'source_url': source_url,
-                'source_html': source_html,
-            }
-            sources_data.append(source_data)
-        item_url = raw.url_split.geturl()
-        item_status = raw.status
-        item_status_message = raw.get_status_message()
-        data = {
-            'sources': len(sources),
-            'sources_data': sources_data,
-            'item_url': item_url,
-            'item_status': item_status,
-            'item_status_message': item_status_message,
-        }
-        error_items.append(data)
-    return error_items
-
-
-def generate_csv(items):
-    header = ['status', 'source', 'url']
-    strIO = StringIO.StringIO()
-    writer = csv.DictWriter(
-        strIO,
-        delimiter=',',
-        lineterminator='\n',
-        fieldnames=header,
-    )
-    writer.writeheader()
-    for item in items:
-        for s_item in item['sources_data']:
-            data = {
-                'status': item['item_status'],
-                'source': s_item['source_url'],
-                'url': item['item_url'],
-            }
-            writer.writerow(data)
-    return strIO.getvalue()
-
-
-def csv_response(data):
-    output = make_response(data)
-    output.headers['Content-Disposition'] = 'attachment; filename=export.csv'
-    output.headers["Content-type"] = "text/csv"
-    return output

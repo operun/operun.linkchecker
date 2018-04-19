@@ -3,3 +3,4 @@ pdbpp
 pygments
 pylinkvalidator
 beautifulsoup
+requests
